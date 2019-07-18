@@ -29,3 +29,9 @@ Create .js file with class or classes to implement graph object. See requirments
 
 One more thing: be brave and creative :)
 We are waiting for you to join our team!
+
+
+контакт инфо:
+Kseniia.Seliuminova@t-systems.com
+
+возьмите меня в школу,я  очень-очень хочу=(
