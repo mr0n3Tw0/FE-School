@@ -21,13 +21,13 @@
          -Должна быть возможность выбрать всех соседей указанной вершины
          -Должна быть возможность получить матрицы смежности
          -Должна быть возможность развернуть граф, если он направленный
-         Должна быть возможность сделать выборку подграфа по указанным вершинам (на входе массив вершин, на выходе указанные вершины со всеми ребрами между ними)
+         -Должна быть возможность сделать выборку подграфа по указанным вершинам (на входе массив вершин, на выходе указанные вершины со всеми ребрами между ними)
          Должен быть реализован любой алгоритм поиска пути между двумя точками графа*/
 
     class NewGraph {
 
-        constructor(isDirected) {
-            this.notDirected = isDirected;
+        constructor(notDirected) {
+            this.notDirected = notDirected;
             this.vertexes = new Map();
             this.edges = new Map();
         }
@@ -50,23 +50,32 @@
             let edgeName = startVertexName.concat(endVertexName);
             if (!this.edges.has(edgeName)) {
                 this.edges.set(edgeName, new Edge(startVertexName, endVertexName, cost));
-                console.log( `edge ${edgeName} added`);
+                console.log(`edge ${edgeName} added`);
 
-                if(this.notDirected){
-                    edgeName=reverseString(edgeName);
-                    this.edges.set(edgeName, new Edge( endVertexName,startVertexName, cost));
-                    console.log( `edge ${edgeName} added`);
+                if (this.notDirected) {
+                    edgeName = reverseString(edgeName);
+                    this.edges.set(edgeName, new Edge(endVertexName, startVertexName, cost));
+                    console.log(`edge ${edgeName} added`);
                 }
 
-            } else  console.log( `edge already exists`);
+            }
 
         }
 
-        getNeighbours(vertexName){
-            if(!this.vertexes.has(vertexName))return "vertex does not exist";
+       /* addEdge(edge) {
+            let edgeName = edge.startVertex.concat(edge.endVertex);
+            if (!this.edges.has(edgeName)) {
+                this.edges.set(edgeName, edge);
+                console.log(`edge ${edgeName} added`);
+            }
+
+        }*/
+
+        getNeighbours(vertexName) {
+            if (!this.vertexes.has(vertexName)) return "vertex does not exist";
             let neighbors = [];
             Array.from(this.edges.values()).forEach(edge => {
-                if(edge.startVertex.localeCompare(vertexName)==0)
+                if (edge.startVertex.localeCompare(vertexName) == 0)
                     neighbors.push(edge.endVertex);
             });
             return neighbors;
@@ -74,21 +83,21 @@
         }
 
 
-
         removeVertex(vertexName) {
             if (this.vertexes.has(vertexName)) {
                 this.vertexes.delete(vertexName);
-                Array.from(this.edges.keys()).forEach(edgename=>{
-                    if(edgename.includes(vertexName))this.edges.delete(edgename);})
+                Array.from(this.edges.keys()).forEach(edgename => {
+                    if (edgename.includes(vertexName)) this.edges.delete(edgename);
+                })
                 return 'Vertex removed successfully'
             } else return 'Vertex does not exist';
         }
 
         removeEdge(startVertexName, endVertexName) {
             let edgeName = startVertexName.concat(endVertexName);
-            if (this.edges.has(edgeName))this.edges.delete(edgeName);
-            if(this.notDirected){
-                edgeName=reverseString(edgeName);
+            if (this.edges.has(edgeName)) this.edges.delete(edgeName);
+            if (this.notDirected) {
+                edgeName = reverseString(edgeName);
                 this.edges.delete(edgeName);
             }
         }
@@ -111,7 +120,6 @@
         }
 
 
-
         getAdjacencyMatrix() {
             const matrix = [];
             for (let key1 of this.vertexes.keys()) {
@@ -131,25 +139,49 @@
         reverseDirection() {
             if (this.notDirected) return 'Graph is not directed';
             let reversedEdges = new Map();
-            Array.from(this.edges.keys()).forEach(edgeName=>{
-                let edgeBuffer=this.edges.get(edgeName);
-                reversedEdges.set(reverseString(edgeName),edgeBuffer);
+            Array.from(this.edges.keys()).forEach(edgeName => {
+                let edgeBuffer = this.edges.get(edgeName);
+                reversedEdges.set(reverseString(edgeName), edgeBuffer);
             });
             Array.from(reversedEdges.values()).forEach(edge => {
                 let vertexBuffer = edge.startVertex;
-                edge.startVertex=edge.endVertex;
-                edge.endVertex=vertexBuffer;
+                edge.startVertex = edge.endVertex;
+                edge.endVertex = vertexBuffer;
             });
 
-            return this.edges=reversedEdges;
+            return this.edges = reversedEdges;
 
         }
-    }
-    function reverseString(str) {
-        return str.split("").reverse().join("");
-    }
 
-    class Vertex {
+        getSubGraph(vertexNames) {
+
+            let subGraph = new NewGraph(this.notDirected);
+            vertexNames.forEach(vertexName => {
+                if (this.vertexes.has(vertexName))
+                    subGraph.addVertex(vertexName);
+                let newNeighbours= this.getNeighbours(vertexName)
+                    .filter( oldNeighbour => vertexNames.includes(oldNeighbour));
+                newNeighbours.forEach(neighbourName => {
+                   let edgeNameBuffer = vertexName.concat(neighbourName);
+                   let edgeCostBuffer = this.edges.get(edgeNameBuffer).cost;
+                   subGraph.addEdge(vertexName,neighbourName,edgeCostBuffer);
+                    })
+                });
+            return subGraph;
+            }
+
+            findPathByDijkstra(vertexName1,vertexName2){
+            
+            }
+        }
+
+        function
+        reverseString(str) {
+            return str.split("").reverse().join("");
+        }
+
+        class
+        Vertex {
 
         name;
 
@@ -214,7 +246,9 @@
     console.log(graph2.edges);
     console.log(graph2.getAdjacencyMatrix());
     console.log(graph2.reverseDirection())
-
+    let vertexes = ['A','B','C'];
+    const subGraph = graph2.getSubGraph(vertexes);
+    console.log(subGraph);
 
 
 </script>
