@@ -1,6 +1,6 @@
 class NewGraph {
 
-    constructor(notDirected) {
+    constructor(notDirected) { // true - обычный граф, false - направленный
         this.notDirected = notDirected;
         this.vertexes = new Map();
         this.edges = new Map();
@@ -12,12 +12,12 @@ class NewGraph {
     notDirected;
 
 
-    addVertex(vertexName) {
+    addVertex(vertexName) {//добавить вершину
         if (!this.vertexes.has(vertexName))
             this.vertexes.set(vertexName, new Vertex(vertexName));
     }
 
-    addEdge(startVertexName, endVertexName, cost) {
+    addEdge(startVertexName, endVertexName, cost) {//добавить ребро по двум вершинам и с указанием стоимости ребра
 
         this.addVertex(startVertexName);
         this.addVertex(endVertexName);
@@ -36,7 +36,7 @@ class NewGraph {
 
     }
 
-    getNeighbours(vertexName) {
+    getNeighbours(vertexName) { //достать соседей
         if (!this.vertexes.has(vertexName)) return "vertex does not exist";
         let neighbors = [];
         Array.from(this.edges.values()).forEach(edge => {
@@ -48,7 +48,7 @@ class NewGraph {
     }
 
 
-    removeVertex(vertexName) {
+    removeVertex(vertexName) { //убрать вершину
         if (this.vertexes.has(vertexName)) {
             this.vertexes.delete(vertexName);
             Array.from(this.edges.keys()).forEach(edgename => {
@@ -58,7 +58,7 @@ class NewGraph {
         } else return 'Vertex does not exist';
     }
 
-    removeEdge(startVertexName, endVertexName) {
+    removeEdge(startVertexName, endVertexName) {//убрать ребро
         let edgeName = startVertexName.concat(endVertexName);
         if (this.edges.has(edgeName)) this.edges.delete(edgeName);
         if (this.notDirected) {
@@ -67,25 +67,25 @@ class NewGraph {
         }
     }
 
-    getEdgeCost(startVertexName, endVertexName) {
+    getEdgeCost(startVertexName, endVertexName) {//получить стоимость ребра
         let edgeName = startVertexName.concat(endVertexName);
         if (this.edges.has(edgeName)) return this.edges.get(edgeName).cost;
         return 0;
     }
 
-    getVertex(vertexName) {
+    getVertex(vertexName) {//взять вершину
         if (this.vertexes.has(vertexName)) return this.vertexes.get(vertexName);
         return 'Vertex does not  exist';
     }
 
-    getEdge(startVertexName, endVertexName) {
+    getEdge(startVertexName, endVertexName) {//взять ребро
         let edgeName = startVertexName.concat(endVertexName);
         if (this.edges.has(edgeName)) return this.edges.get(edgeName);
         return 'Edge does not exist';
     }
 
 
-    getAdjacencyMatrix() {
+    getAdjacencyMatrix() {//получить матрицу смежности
         const matrix = [];
         for (let key1 of this.vertexes.keys()) {
             matrix[key1] = [];
@@ -101,7 +101,7 @@ class NewGraph {
         return matrix;
     }
 
-    reverseDirection() {
+    reverseDirection() {//развернуть направленный граф
         if (this.notDirected) return 'Graph is not directed';
         let reversedEdges = new Map();
         Array.from(this.edges.keys()).forEach(edgeName => {
@@ -118,7 +118,7 @@ class NewGraph {
 
     }
 
-    getSubGraph(vertexNames) {
+    getSubGraph(vertexNames) {// получить подграф
 
         let subGraph = new NewGraph(this.notDirected);
         vertexNames.forEach(vertexName => {
@@ -135,7 +135,7 @@ class NewGraph {
         return subGraph;
     }
 
-    getVertices(){
+    getVertices(){//это для Дейкстры
 
         let vertices= new Map();
         Array.from(this.vertexes.keys()).forEach(vertexName=>{
@@ -150,7 +150,7 @@ class NewGraph {
         return vertices;
     }
 
-    getPathByDijkstra(start, finish) {
+    getPathByDijkstra(start, finish) { //а это сам Дейкстра
         let nodes = new PriorityQueue(),
             distances = {},
             previous = {},
@@ -205,7 +205,7 @@ class NewGraph {
         return path.concat([start]).reverse();
     };
 }
-class PriorityQueue {
+class PriorityQueue {//тоже для Дейкстры
     _nodes = [];
 
     enqueue(priority, key) {
