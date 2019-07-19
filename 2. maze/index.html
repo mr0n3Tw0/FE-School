@@ -260,6 +260,8 @@
     const pieceElement = document.querySelector('.piece');
     const directionNames = ['up', 'right', 'down', 'left'];
     let stepper;
+    let triedRight = false;
+    let triedLeft = false;
 
     class Field {
         constructor() {
@@ -330,7 +332,7 @@
         }
     }
 
-    function createPiece () {
+    function createPiece() {
 
         let field = new Field();
 
@@ -416,23 +418,27 @@
 
         stepper = setInterval(() => {
 
-            let nextMove = moves.pop();
-
-            if (typeof nextMove === 'function') {
-                nextMove();
-            } else {
-                let success = isPieceOut();
-
-                if (success) {
-                    result.textContent = successResult;
-                    result.classList.add(successModifier);
-                } else {
-                    result.textContent = failResult;
-                    result.classList.remove(successModifier);
-                }
-
+            if(isPieceOut()){
+                result.textContent = successResult;
+                result.classList.add(successModifier);
                 clearInterval(stepper);
                 console.log({stepsCount, turnsCount});
+
+            }
+            let nextMove = moves.pop();
+
+            if ((typeof nextMove === 'function')) {
+                nextMove();
+            } else {
+
+                    result.textContent = failResult;
+                    result.classList.remove(successModifier);
+                    clearInterval(stepper);
+                    console.log({stepsCount, turnsCount});
+
+
+               // clearInterval(stepper);
+
             }
         }, 200);
 
@@ -450,10 +456,56 @@
         result.classList.remove(successModifier);
     }
 
+    /*unction findWay(kusok) {
+        while (kusok.isThereWay()) {
+            triedRight = false;
+            triedLeft = false;
+            kusok.goForward();
+        }
+            if (!triedRight) {
+                kusok.turnRight();
+                triedRight = true;
+                findWay(kusok);
+            } else if (!triedLeft) {
+                triedLeft = true;
+                kusok.turnLeft();
+                kusok.turnLeft();
+                findWay(kusok)
+            } else {
+                kusok.turnLeft();
+                findWay(kusok)
+            }
+
+    }*/
+
+    function go(kus){
+        while(kus.isThereWay()){
+            triedRight = false;
+            triedLeft = false;
+            kus.goForward();
+        }
+
+    }
+
     function escapePlan() {
         const piece = createPiece();
-        // piece.isThereWay();
-        // piece.goForward();
+
+      for(let i=0;i<100;i++){
+            go(piece);
+            if (!triedRight) {
+                piece.turnRight();
+                triedRight = true;
+                go(piece);
+            } else if (!triedLeft) {
+                triedLeft = true;
+                piece.turnLeft();
+                piece.turnLeft();
+                go(piece)
+            } else {
+                piece.turnLeft();
+                go(piece)
+            }
+        }
         // piece.turnRight();
         // piece.turnLeft();
         // piece.amIFree();
